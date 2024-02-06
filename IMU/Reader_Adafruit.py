@@ -33,18 +33,25 @@ def temperature():
     last_val = result
     return result
 
+def get_data():       # Collect  data from BNO055 module
+
+    data[10], data[11], data[12], data[9] = sensor.quaternion
+    data[6], data[7], data[8] = sensor.magnetic
+    data[0], data[1], data[2] = sensor.gyro
+    data[3], data[4], data[5] = sensor.acceleration
+    data[13], data[14], data[15] = sensor.euler
+    return data
 def printdata():
+
     print("Sensor Temperature: {} degrees C".format(sensor.temperature))
     print("Raspberry Pi Temperature: {} degrees C".format(temperature()))
     print("Accelerometer (m/s^2): {}".format(sensor.acceleration))
-    print(type(sensor.acceleration))
     print("Magnetometer (microteslas): {}".format(sensor.magnetic))
     print("Gyroscope (rad/sec): {}".format(sensor.gyro))
     print("Euler angle: {}".format(sensor.euler))
     print("Quaternion: {}".format(sensor.quaternion))
     print("Linear acceleration (m/s^2): {}".format(sensor.linear_acceleration))
     print("Gravity (m/s^2): {}".format(sensor.gravity))
-
     print()
 
 def check_time():    # Check the time since last write to CSV and write new data if desired time has passed
@@ -55,13 +62,7 @@ def check_time():    # Check the time since last write to CSV and write new data
         write_to_csv()
 
 
-def get_data():       # Collect  data from BNO055 module
 
-    data[10], data[11], data[12], data[9] = bno.read_quaterion()
-    data[6], data[7], data[8] = bno.read_magnetometer()
-    data[0], data[1], data[2] = bno.read_gyroscope()
-    data[3], data[4], data[5] = bno.read_accelerometer()
-    return data
 
 
 def name_csv():  # Initialise CSV file (note, some columns may not be used)
@@ -107,9 +108,9 @@ def write_to_csv():   # Write data to CSV
             "q1": readings[10],
             "q2": readings[11],
             "q3": readings[12],
-            "d0": 0,
-            "d1": 0,
-            "d2": 0,
+            "d0": readings[13],
+            "d1": readings[14],
+            "d2": readings[15],
             "d'0": 0,
             "d'1": 0,
             "d'2": 0,
@@ -126,5 +127,5 @@ start = time.time()     # Save start time of signal reading
 while True:
     #check_time()
     printdata()
-    time.sleep(1)
+
 
